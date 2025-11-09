@@ -1,3 +1,8 @@
 *.pyc
 RPi/*
 config.yaml
+*.pem
+*.crt
+*.key
+*.srl
+*.csr
