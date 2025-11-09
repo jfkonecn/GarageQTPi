@@ -1,13 +1,20 @@
 [Unit]
-Description=GarageQTPi
-After=network.target
+Description=GarageQTPi (%i)
+Wants=network-online.target
+After=network-online.target
 
 [Service]
 Type=simple
+User=%i
+WorkingDirectory=/home/%i/GarageQTPi
+Environment=PYTHONUNBUFFERED=1
+# run the venv's python, not /usr/bin/python
+ExecStart=/home/%i/GarageQTPi/.venv/bin/python -u main.py
 Restart=always
 RestartSec=3
-User=%i
-ExecStart=/usr/bin/python -u /home/pi/GarageQTPi/main.py
+
+# If using GPIO on a Pi, either run as a user in the gpio group:
+# SupplementaryGroups=gpio
 
 [Install]
 WantedBy=multi-user.target
