@@ -39,7 +39,7 @@ def execute_command(door, command):
         print("Invalid command: %s" % command)
 
 with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config.yaml'), 'r') as ymlfile:
-    CONFIG = yaml.load(ymlfile)
+    CONFIG = yaml.load(ymlfile, Loader=yaml.SafeLoader)
 
 ### SETUP MQTT ###
 user = CONFIG['mqtt']['user']
@@ -52,7 +52,7 @@ if 'discovery_prefix' not in CONFIG['mqtt']:
 else:
     discovery_prefix = CONFIG['mqtt']['discovery_prefix']
 
-client = mqtt.Client(client_id="MQTTGarageDoor_" + binascii.b2a_hex(os.urandom(6)), clean_session=True, userdata=None, protocol=4)
+client = mqtt.Client(client_id="MQTTGarageDoor_" + binascii.b2a_hex(os.urandom(6)).decode(), clean_session=True, userdata=None, protocol=4)
 
 client.on_connect = on_connect
 
@@ -70,7 +70,7 @@ if __name__ == "__main__":
             doorCfg['name'] = doorCfg['id']
 
         # Sanitize id value for mqtt
-        doorCfg['id'] = re.sub('\W+', '', re.sub('\s', ' ', doorCfg['id']))
+        doorCfg['id'] = re.sub(r'\W+', '', re.sub(r'\s', ' ', doorCfg['id']))
 
         if discovery is True:
             base_topic = discovery_prefix + "/cover/" + doorCfg['id']
