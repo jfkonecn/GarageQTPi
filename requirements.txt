@@ -1,3 +1,4 @@
+lgpio==0.2.2.0
 paho-mqtt==2.1.0
 PyYAML==6.0.3
-RPi.GPIO==0.7.1
+rpi-lgpio==0.6

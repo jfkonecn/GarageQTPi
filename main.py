@@ -3,6 +3,7 @@ import binascii
 import yaml
 import paho.mqtt.client as mqtt
 import re
+import ssl
 
 from lib.garage import GarageDoor
 
@@ -15,7 +16,7 @@ def update_state(value, topic):
     client.publish(topic, value, retain=True)
 
 # The callback for when the client receives a CONNACK response from the server.
-def on_connect(client, userdata, rc):
+def on_connect(client, userdata, flags, rc, properties):
     print("Connected with result code: %s" % mqtt.connack_string(rc))
     for config in CONFIG['doors']:
         command_topic = config['command_topic']
@@ -28,6 +29,7 @@ def execute_command(door, command):
         doorName = door.name
     except:
         doorName = door.id
+
     print("Executing command %s for door %s" % (command, doorName))
     if command == "OPEN" and door.state == 'closed':
         door.open()
@@ -52,7 +54,21 @@ if 'discovery_prefix' not in CONFIG['mqtt']:
 else:
     discovery_prefix = CONFIG['mqtt']['discovery_prefix']
 
-client = mqtt.Client(client_id="MQTTGarageDoor_" + binascii.b2a_hex(os.urandom(6)).decode(), clean_session=True, userdata=None, protocol=4)
+client = mqtt.Client(
+    client_id="MQTTGarageDoor_" + binascii.b2a_hex(os.urandom(6)).decode(),
+    clean_session=True,
+    userdata=None,
+    protocol=mqtt.MQTTv311,
+    callback_api_version=mqtt.CallbackAPIVersion.VERSION2,
+    transport="tcp",
+)
+
+client.tls_set(
+        ca_certs=CONFIG['mqtt']["ca_cert_path"],
+        certfile=None,
+        keyfile=None,
+        tls_version=ssl.PROTOCOL_TLS_CLIENT,
+)
 
 client.on_connect = on_connect
 
@@ -86,7 +102,8 @@ if __name__ == "__main__":
 
         # Callback per door that passes a reference to the door
         def on_message(client, userdata, msg, door=door):
-            execute_command(door, str(msg.payload))
+            command = msg.payload.decode().strip().upper()
+            execute_command(door, command)
 
         # Callback per door that passes the doors state topic
         def on_state_change(value, topic=state_topic):
