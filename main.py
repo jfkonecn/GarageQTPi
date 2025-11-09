@@ -6,20 +6,20 @@ import re
 
 from lib.garage import GarageDoor
 
-print "Welcome to GarageBerryPi!"
+print("Welcome to GarageBerryPi!")
 
 # Update the mqtt state topic
 def update_state(value, topic):
-    print "State change triggered: %s -> %s" % (topic, value)
+    print("State change triggered: %s -> %s" % (topic, value))
 
     client.publish(topic, value, retain=True)
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, rc):
-    print "Connected with result code: %s" % mqtt.connack_string(rc)
+    print("Connected with result code: %s" % mqtt.connack_string(rc))
     for config in CONFIG['doors']:
         command_topic = config['command_topic']
-        print "Listening for commands on %s" % command_topic
+        print("Listening for commands on %s" % command_topic)
         client.subscribe(command_topic)
 
 # Execute the specified command for a door
@@ -28,7 +28,7 @@ def execute_command(door, command):
         doorName = door.name
     except:
         doorName = door.id
-    print "Executing command %s for door %s" % (command, doorName)
+    print("Executing command %s for door %s" % (command, doorName))
     if command == "OPEN" and door.state == 'closed':
         door.open()
     elif command == "CLOSE" and door.state == 'open':
@@ -36,7 +36,7 @@ def execute_command(door, command):
     elif command == "STOP":
         door.stop()
     else:
-        print "Invalid command: %s" % command
+        print("Invalid command: %s" % command)
 
 with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config.yaml'), 'r') as ymlfile:
     CONFIG = yaml.load(ymlfile)

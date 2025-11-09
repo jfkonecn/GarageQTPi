@@ -6,3 +6,4 @@ config.yaml
 *.key
 *.srl
 *.csr
+.venv
