@@ -1,19 +1,25 @@
 mqtt:
-    host: 
-    port: 
-    user: 
-    password: 
-#    discovery: true #defaults to false, uncomment to enable home-assistant discovery
-#    discovery_prefix: homeassistant #change to match with setting of home-assistant
-    ca_cert_path: "/path/to/ca.crt"
+    host: xxxxxxxxxxxxx.home
+    port: 8883 
+    user: xxxxxxxx
+    password: xxxxxxxxxxxxxxxxxxxx
+    discovery: true #defaults to false, uncomment to enable home-assistant discovery
+    discovery_prefix: homeassistant #change to match with setting of home-assistant
+    ca_cert_path: "/path/to/rootCA.crt"
 doors:
     -
-        id: 
-#        name: #defaults to an unsanitized version of the id paramater
-        relay: 
-        state: 
-#        state_mode: normally_closed #defaults to normally open, uncomment to switch
-#        invert_relay: true #defaults to false, uncomment to turn relay pin on by default
-        state_topic: "home-assistant/cover"
-        command_topic: "home-assistant/cover/set"
-
+      id: 'left'
+      name: 'Left Garage Door'
+      relay: 23
+      state: 17
+      state_topic: "home-assistant/cover/left"
+      command_topic: "home-assistant/cover/left/set"
+      invert_relay: true
+    -
+      id: 'right'
+      name: 'Right Garage Door'
+      relay: 24
+      state: 27
+      state_topic: "home-assistant/cover/right"
+      command_topic: "home-assistant/cover/right/set"
+      invert_relay: true
