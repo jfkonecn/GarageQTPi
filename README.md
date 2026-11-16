@@ -93,6 +93,18 @@ Either follow the cover setup or enable mqtt discovery
 HomeAssistant MQTT Cover: https://home-assistant.io/components/cover.mqtt/  
 HomeAssistant MQTT Discovery: https://home-assistant.io/docs/mqtt/discovery/
 
+MQTT discovery publishes a stable `unique_id` for each door, such as
+`garageqtpi_left` for door ID `left`, so its settings can be managed in the
+Home Assistant UI. Keep door IDs stable and unique across GarageQTPi instances
+connected to the same Home Assistant installation (including after removal of
+spaces and punctuation).
+
+If an existing discovered entity reports that it has no unique ID, deploy the
+updated code and restart GarageQTPi to replace the retained discovery message.
+If you configured the MQTT cover manually in Home Assistant YAML instead,
+add `unique_id: garageqtpi_left` to that cover's configuration and reload the
+MQTT integration. Use a different unique ID for each door.
+
 Screenshot:
 
 ![Home assistant ui][1]

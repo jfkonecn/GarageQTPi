@@ -1,5 +1,6 @@
 import os
 import binascii
+import json
 import yaml
 import paho.mqtt.client as mqtt
 import re
@@ -119,9 +120,14 @@ if __name__ == "__main__":
 
         # If discovery is enabled publish configuration
         if discovery is True:
-            client.publish(config_topic,'{"name": "' + doorCfg['name'] + '", "command_topic": "' + command_topic + '", "state_topic": "' + state_topic + '"}', retain=True)
+            discovery_config = {
+                'name': doorCfg['name'],
+                'unique_id': 'garageqtpi_' + doorCfg['id'],
+                'command_topic': command_topic,
+                'state_topic': state_topic,
+            }
+            client.publish(config_topic, json.dumps(discovery_config), retain=True)
 
     # Main loop
     client.loop_forever()
-
 
